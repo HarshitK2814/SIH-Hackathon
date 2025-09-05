@@ -24,7 +24,6 @@ RobCrop is a smart farming assistant that uses a state-of-the-art Deep Learning 
 - **Backend**: Python, FastAPI, Uvicorn
 - **Machine Learning**: PyTorch, Torchvision, OpenCV
 - **Frontend**: Streamlit
-- **Deployment**: Docker, Docker Compose
 - **Code Management**: Git, GitHub
 
 ---
@@ -67,19 +66,19 @@ The repository is organized to separate concerns and maintain a clean, scalable 
 ```
 .
 ├── backend/                # Contains all FastAPI and AI model logic
-│   ├── Dockerfile
+│   ├
 │   ├── main.py            # FastAPI application entrypoint
 │   ├── inference.py       # Model prediction logic
 │   ├── model.py           # CNN model architecture
 │   └── requirements.txt
 │
 ├── frontend/              # Contains all Streamlit UI code
-│   ├── Dockerfile
+│   ├
 │   ├── app.py            # Main Streamlit application
 │   └── requirements.txt
 │
-├── .gitignore            # Specifies files to be ignored by Git
-└── docker-compose.yml    # Defines and orchestrates the multi-container application
+├
+└── .gitignore            # Specifies files to be ignored by Git
 ```
 
 ---
@@ -102,42 +101,6 @@ This project is our contribution to building a more sustainable and technologica
 - **Model Type**: Convolutional Neural Network (CNN)
 - **Framework**: PyTorch
 - **Training Dataset**: Diverse crop disease dataset covering multiple plant species
-
----
-
-## 🤝 Contributing
-
-We welcome contributions to make RobCrop even better! Here's how you can help:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👥 Team
-
-Developed with ❤️ for Smart India Hackathon 2025
-
-- **Lead Developer**: [HarshitK2814](https://github.com/HarshitK2814)
-
----
-
-## 📞 Support
-
-If you encounter any issues or have questions, please:
-
-1. Check the [Issues](https://github.com/HarshitK2814/SIH-Hackathon/issues) section
-2. Create a new issue if your problem isn't already listed
-3. Provide detailed information about your environment and the issue
 
 ---
 
