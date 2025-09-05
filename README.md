@@ -1,20 +1,20 @@
-# 🚜 RobCrop - AI-Powered Agricultural Disease Detection
+# 🚜 RobooCrop - AI-Powered Agricultural Disease Detection
 
 **Developed for the Smart India Hackathon 2025.**
 
-RobCrop is a smart farming assistant that uses a state-of-the-art Deep Learning model to detect diseases in crops with **96.45% accuracy**. This tool empowers farmers to diagnose plant health issues instantly using just a smartphone photo, enabling early treatment and protecting crop yields.
+RoboCrop is a smart farming assistant that uses a state-of-the-art Deep Learning model to detect diseases in crops with **96.45% accuracy**. This tool empowers farmers to diagnose plant health issues instantly using just a smartphone photo, enabling early treatment and protecting crop yields.
 
-![RobCrop UI](https://github.com/HarshitK2814/SIH-Hackathon/blob/master/path/to/your/screenshot.png?raw=true)
+![RoboCrop UI](https://github.com/HarshitK2814/SIH-Hackathon/blob/master/path/to/your/screenshot.png?raw=true)
 *(Optional: Replace the URL above with a link to a screenshot of your app)*
 
 ---
 
 ## 🌱 Key Features
 
-- **High-Accuracy AI Model**: A robust Convolutional Neural Network (CNN) trained on a diverse dataset to identify multiple diseases across various crops like tomatoes, potatoes, and peppers.
+- **High-Accuracy AI Model**: A Roboust Convolutional Neural Network (CNN) trained on a diverse dataset to identify multiple diseases across various crops like tomatoes, potatoes, and peppers.
 - **Instant Diagnosis**: Get results, confidence scores, and actionable treatment recommendations in seconds.
 - **User-Friendly Interface**: A clean, intuitive, and farmer-friendly web application built with Streamlit, designed for ease of use in the field.
-- **Scalable Architecture**: A robust FastAPI backend serves the PyTorch model, ensuring high performance and the ability to handle multiple requests.
+- **Scalable Architecture**: A Roboust FastAPI backend serves the PyTorch model, ensuring high performance and the ability to handle multiple requests.
 - **Dockerized for Portability**: The entire application is containerized using Docker and Docker Compose, allowing for easy, consistent, and reliable deployment on any platform.
 
 ---
@@ -53,7 +53,7 @@ docker-compose up --build
 
 **3. Access the application:**
 Once the containers are up and running, you can access the services at the following URLs:
-- **🌱 RobCrop Frontend UI**: `http://localhost:8501`
+- **🌱 RoboCrop Frontend UI**: `http://localhost:8501`
 - **⚙️ Backend API Docs**: `http://localhost:8000/docs`
 
 ---
@@ -84,7 +84,7 @@ The repository is organized to separate concerns and maintain a clean, scalable 
 
 ## 🎯 Project Goal & Impact
 
-The primary goal of RobCrop is to bridge the technology gap for farmers by providing an accessible, affordable, and accurate tool for crop health management. By enabling early disease detection, this project aims to:
+The primary goal of RoboCrop is to bridge the technology gap for farmers by providing an accessible, affordable, and accurate tool for crop health management. By enabling early disease detection, this project aims to:
 
 - **Reduce Crop Loss**: Help farmers save a significant portion of their yield that would otherwise be lost to disease.
 - **Optimize Pesticide Use**: Promote targeted treatment instead of broad, untargeted spraying, saving costs and reducing environmental impact.
