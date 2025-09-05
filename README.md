@@ -4,8 +4,8 @@
 
 RoboCrop is a smart farming assistant that uses a state-of-the-art Deep Learning model to detect diseases in crops with **96.45% accuracy**. This tool empowers farmers to diagnose plant health issues instantly using just a smartphone photo, enabling early treatment and protecting crop yields.
 
-![RoboCrop UI](https://github.com/HarshitK2814/SIH-Hackathon/blob/master/path/to/your/screenshot.png?raw=true)
-*(Optional: Replace the URL above with a link to a screenshot of your app)*
+![RoboCrop UI](https://github.com/HarshitK2814/SIH-Hackathon/blob/master/images/Dashboard_RoboCrop.jpg)
+
 
 ---
 
