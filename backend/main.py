@@ -2,7 +2,8 @@
 RobCrop FastAPI Backend
 Agricultural Disease Detection API for SIH Hackathon
 """
-
+import sys
+import os
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -11,8 +12,14 @@ import io
 import time
 from PIL import Image
 import logging
+from typing import Optional, List
 
-# Import your existing inference system
+# --- FIX: Add current directory to path to ensure 'inference' can be found ---
+# This makes the import robust, regardless of how the script is launched.
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+# ----------------------------------------------------------------------------
 from inference import RobCropInference
 
 # Configure logging
@@ -31,14 +38,14 @@ app = FastAPI(
 # Configure CORS for Streamlit frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
+    allow_origins=["*"],  # In production, specify your frontend's exact origin
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Global model instance (loaded once at startup)
-detector = None
+detector: Optional[RobCropInference] = None
 
 @app.on_event("startup")
 async def startup_event():
@@ -50,11 +57,12 @@ async def startup_event():
         logger.info("✅ RobCrop AI model loaded successfully!")
     except Exception as e:
         logger.error(f"❌ Failed to load model: {str(e)}")
+        # This will stop the server from starting if the model fails to load
         raise
 
 @app.get("/")
 async def root():
-    """API root endpoint"""
+    """API root endpoint providing basic service info."""
     return {
         "message": "🌱 RoboCrop Agricultural Disease Detection API",
         "status": "online",
@@ -64,35 +72,25 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint to verify service status."""
     return {
         "status": "healthy",
         "model_loaded": detector is not None,
         "timestamp": time.time(),
-        "service": "RobCrop Agricultural AI"
+        "service": "RoboCrop Agricultural AI"
     }
 
 @app.post("/predict")
 async def predict_disease(file: UploadFile = File(...)):
     """
-    Predict crop disease from uploaded image
-    
-    Returns:
-        - disease: Detected disease name
-        - confidence: Model confidence (0-1)
-        - action: Recommended action (SPRAY/SKIP)
-        - treatment: Treatment recommendation
-        - processing_time: Inference time in milliseconds
+    Predict crop disease from an uploaded image.
     """
-    
-    # Validate model is loaded
     if detector is None:
         raise HTTPException(
             status_code=503, 
-            detail="Model not loaded. Please restart the service."
+            detail="Model not loaded. The service may be starting up or has failed."
         )
     
-    # Validate file type
     if not file.content_type or not file.content_type.startswith('image/'):
         raise HTTPException(
             status_code=400, 
@@ -100,102 +98,44 @@ async def predict_disease(file: UploadFile = File(...)):
         )
     
     try:
-        # Read and process image
         start_time = time.time()
         contents = await file.read()
+        image = Image.open(io.BytesIO(contents)).convert('RGB')
         
-        # Convert to PIL Image
-        try:
-            image = Image.open(io.BytesIO(contents)).convert('RGB')
-        except Exception as e:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid image format: {str(e)}"
-            )
-        
-        # Get prediction from your trained model
         result = detector.predict(image)
+        if 'error' in result:
+            raise Exception(result['error'])
+            
         processing_time = (time.time() - start_time) * 1000  # Convert to ms
-        
-        # Get treatment recommendation
         treatment = get_treatment_advice(result['disease'])
         
-        # Enhanced response
         response = {
             "disease": result['disease'],
             "confidence": result['confidence'],
             "action": result['action'],
             "treatment": treatment,
             "processing_time_ms": round(processing_time, 2),
-            "class_index": result.get('class_index', -1),
             "status": "success"
         }
         
         logger.info(f"Prediction: {result['disease']} ({result['confidence']:.1%})")
-        
         return JSONResponse(content=response)
         
-    except HTTPException:
-        raise
     except Exception as e:
-        logger.error(f"Prediction error: {str(e)}")
+        logger.error(f"Prediction error for file '{file.filename}': {str(e)}")
         raise HTTPException(
             status_code=500, 
-            detail=f"Prediction failed: {str(e)}"
+            detail=f"An error occurred during prediction: {str(e)}"
         )
 
-@app.post("/predict-batch")
-async def predict_batch(files: list[UploadFile] = File(...)):
-    """Batch prediction for multiple images"""
-    
-    if detector is None:
-        raise HTTPException(status_code=503, detail="Model not loaded")
-    
-    if len(files) > 10:  # Limit batch size
-        raise HTTPException(status_code=400, detail="Batch size limited to 10 images")
-    
-    try:
-        results = []
-        start_time = time.time()
-        
-        for i, file in enumerate(files):
-            if not file.content_type or not file.content_type.startswith('image/'):
-                continue
-                
-            contents = await file.read()
-            image = Image.open(io.BytesIO(contents)).convert('RGB')
-            
-            result = detector.predict(image)
-            result['image_index'] = i
-            result['filename'] = file.filename
-            results.append(result)
-        
-        total_time = (time.time() - start_time) * 1000
-        
-        return {
-            "results": results,
-            "total_images": len(results),
-            "total_processing_time_ms": round(total_time, 2),
-            "avg_time_per_image_ms": round(total_time / len(results), 2) if results else 0
-        }
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Batch prediction failed: {str(e)}")
-
 def get_treatment_advice(disease: str) -> str:
-    """Get treatment recommendations for detected diseases"""
-    
+    """Get treatment recommendations for detected diseases."""
     treatments = {
-        # Pepper diseases
         "Pepper,_bell___Bacterial_spot": "Apply copper-based bactericide. Remove infected leaves. Improve air circulation and avoid overhead watering.",
         "Pepper,_bell___healthy": "No treatment needed. Maintain good cultural practices and monitor regularly.",
-        
-        # Potato diseases  
         "Potato___Early_blight": "Apply fungicide (chlorothalonil or mancozeb). Remove infected foliage. Ensure adequate spacing.",
         "Potato___Late_blight": "Apply preventive fungicide immediately. Remove all infected plant material. Avoid overhead irrigation.",
         "Potato___healthy": "No treatment needed. Continue proper field management and disease monitoring.",
-        
-        # Tomato diseases
         "Tomato___Bacterial_spot": "Use copper sprays weekly. Remove infected leaves immediately. Improve ventilation.",
         "Tomato___Early_blight": "Apply fungicide (boscalid or azoxystrobin). Mulch soil to prevent splash. Prune lower leaves.",
         "Tomato___Late_blight": "Emergency fungicide application required. Remove all infected plants immediately.",
@@ -212,26 +152,6 @@ def get_treatment_advice(disease: str) -> str:
         return f"🚨 {specific_treatment}"
     else:
         return "⚠️ Disease detected. Consult agricultural extension officer for specific treatment recommendations."
-
-@app.get("/model-info")
-async def get_model_info():
-    """Get model information and statistics"""
-    if detector is None:
-        raise HTTPException(status_code=503, detail="Model not loaded")
-    
-    return {
-        "model_name": "RobCrop ResNet50",
-        "accuracy": "96.45%",
-        "num_classes": 11,
-        "supported_crops": ["Pepper", "Potato", "Tomato"],
-        "diseases_detected": [
-            "Bacterial Spot", "Early Blight", "Late Blight", 
-            "Yellow Leaf Curl Virus", "Mosaic Virus", "Healthy"
-        ],
-        "architecture": "ResNet50 Transfer Learning",
-        "training_images": "60,786 agricultural images",
-        "device": str(detector.device) if hasattr(detector, 'device') else "unknown"
-    }
 
 if __name__ == "__main__":
     uvicorn.run(
