@@ -6,7 +6,7 @@ import os
 
 # Configure page
 st.set_page_config(
-    page_title="🚜 RobCrop - Smart Farming Assistant",
+    page_title="🚜 RoboCrop - Smart Farming Assistant",
     page_icon="🌱",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -304,7 +304,7 @@ API_URL = os.getenv('API_URL', 'http://localhost:8000')
 # Main header
 st.markdown("""
 <div class="main-header">
-    <h1>🚜 RobCrop - Smart Farming Assistant</h1>
+    <h1>🚜 RoboCrop - Smart Farming Assistant</h1>
     <p>🌱 AI-Powered Crop Disease Detection - Protecting Your Harvest with 96.45% Accuracy</p>
 </div>
 """, unsafe_allow_html=True)
