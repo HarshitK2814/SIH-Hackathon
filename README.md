@@ -34,7 +34,6 @@ Follow these instructions to get a local copy of the project up and running for 
 
 ### Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running on your system.
 - [Git](https://git-scm.com/downloads) installed on your system.
 
 ### Installation & Setup
