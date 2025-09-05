@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Create FastAPI app
 app = FastAPI(
-    title="🌱 RobCrop Agricultural AI API",
+    title="🌱 RoboCrop Agricultural AI API",
     description="AI-powered crop disease detection for smart agriculture",
     version="1.0.0",
     docs_url="/docs",
@@ -56,7 +56,7 @@ async def startup_event():
 async def root():
     """API root endpoint"""
     return {
-        "message": "🌱 RobCrop Agricultural Disease Detection API",
+        "message": "🌱 RoboCrop Agricultural Disease Detection API",
         "status": "online",
         "version": "1.0.0",
         "model_accuracy": "96.45%"
