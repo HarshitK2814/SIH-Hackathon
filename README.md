@@ -1,4 +1,4 @@
-# 🚜 RobooCrop - AI-Powered Agricultural Disease Detection
+# 🚜 RoboCrop - AI-Powered Agricultural Disease Detection
 
 **Developed for the Smart India Hackathon 2025.**
 
